@@ -1,0 +1,36 @@
+zerops:
+  - setup: api
+    build:
+      base: nodejs@22
+      buildCommands:
+        - npm i
+        - npm run build api
+      deployFiles:
+        - dist
+        - package.json
+        - node_modules
+      cache:
+        - node_modules
+    run:
+      start: node dist/apps/api/main.js
+      envVariables:
+        DB_URL: ${db_connectionString}
+      ports:
+        - port: 3000
+          httpSupport: true
+
+  - setup: app
+    build:
+      base: nodejs@22
+      buildCommands:
+        - npm i
+        - npm run build app
+      deployFiles:
+        - dist/apps/app/~
+      cache:
+        - node_modules
+    run:
+      base: static
+      envReplace:
+        delimiter: '%%'
+        target: ./

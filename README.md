@@ -13,7 +13,7 @@
 ## Deploy to Zerops
 ```yaml
 project:
-  name: vsh-frontend
+  name: zerops-fe-example
   envVariables:
     API_URL: https://api-${zeropsSubdomainHost}-3000.prg1.zerops.app/api
 
