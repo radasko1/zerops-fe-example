@@ -4,7 +4,9 @@
   "license": "MIT",
   "scripts": {
     "dev:app": "nx serve app",
-    "dev:api": "nx serve api"
+    "dev:api": "nx serve api",
+    "build:app": "nx build app",
+    "build:api": "nx build api"
   },
   "private": true,
   "dependencies": {

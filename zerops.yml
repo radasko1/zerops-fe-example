@@ -4,7 +4,7 @@ zerops:
       base: nodejs@22
       buildCommands:
         - npm i
-        - npm run build api
+        - npm run build:api
       deployFiles:
         - dist
         - package.json
@@ -24,7 +24,7 @@ zerops:
       base: nodejs@22
       buildCommands:
         - npm i
-        - npm run build app
+        - npm run build:app
       deployFiles:
         - dist/apps/app/~
       cache:
