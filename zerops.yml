@@ -26,7 +26,7 @@ zerops:
         - npm i
         - npm run build:app
       deployFiles:
-        - dist/apps/app/~
+        - dist/apps/app/browser/~
       cache:
         - node_modules
     run:
