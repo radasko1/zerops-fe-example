@@ -1,0 +1,33 @@
+<mat-card class="__card">
+  <form [formGroup]="form">
+    <div class="__grid">
+
+      <div>
+        <mat-checkbox
+          [formControlName]="'completed'"
+          (change)="update.emit(form.getRawValue())"></mat-checkbox>
+      </div>
+
+      <div>
+        <mat-form-field class="__input">
+          <input
+            matInput
+            type="text"
+            [formControlName]="'text'"
+            (change)="update.emit(form.getRawValue())"
+          />
+        </mat-form-field>
+      </div>
+
+      <div>
+        <button
+          mat-icon-button
+          type="button"
+          (click)="delete.emit()">
+          <mat-icon fontSet="material-icons-outlined">delete</mat-icon>
+        </button>
+      </div>
+
+    </div>
+  </form>
+</mat-card>

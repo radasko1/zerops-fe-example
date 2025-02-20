@@ -1,0 +1,33 @@
+<form
+  class="__form"
+  (submit)="add.emit(formControls().getRawValue())"
+  [formGroup]="formControls()">
+
+  <div>
+    <mat-form-field>
+      <input
+        matInput
+        [placeholder]="'Napište popis úkolu..'"
+        type="text"
+        [formControlName]="'text'"
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="__checkbox-wrap">
+    <mat-checkbox [formControlName]="'completed'">
+      Přidat jako vyřešené
+    </mat-checkbox>
+  </div>
+
+  <button
+    color="primary"
+    mat-raised-button
+    [disabled]="!formControls().valid"
+    class="__button"
+    type="submit">
+    Přidat úkol
+  </button>
+
+</form>
+

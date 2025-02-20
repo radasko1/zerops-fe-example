@@ -7,10 +7,11 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:application",
+      "executor": "@nx/angular:application",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/app",
+        "plugins": ["apps/app/plugins/env-var-plugin.js"],
         "index": "apps/app/src/index.html",
         "browser": "apps/app/src/main.ts",
         "polyfills": ["zone.js"],
@@ -22,7 +23,10 @@
             "input": "apps/app/public"
           }
         ],
-        "styles": ["apps/app/src/styles.scss"],
+        "styles": [
+          "apps/app/src/styles.scss",
+          "@angular/material/prebuilt-themes/indigo-pink.css"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -50,7 +54,7 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:dev-server",
       "configurations": {
         "production": {
           "buildTarget": "app:build:production"

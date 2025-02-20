@@ -1,0 +1,24 @@
+<mat-card class="__add-form-card">
+  <z-todo-add-form
+    [formInstance]="formInstance"
+    (add)="onAdd$.next($event)"
+  />
+</mat-card>
+
+<div class="__actions-wrap">
+  <z-todos-actions
+    [hideCompletedState]="state().hideCompletedSignal"
+    (toggleCompleted)="hideCompletedSignal.set($event)"
+    (markAllComplete)="onMarkAllComplete$.next()"
+  />
+</div>
+
+<z-todos-list
+  (updateItem)="onUpdate$.next($event)"
+  (deleteItem)="onDelete$.next($event)"
+  [todos]="state().visibleTodos"
+/>
+
+<div class="__count-wrap">
+  <z-todos-counter [todos]="state().todos" />
+</div>

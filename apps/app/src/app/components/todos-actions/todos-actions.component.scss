@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  --mdc-typography-button-font-size: 12px;
+  --mdc-typography-body2-font-weight: 500;
+}
+
+.__grid {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  align-items: center;
+}
+
+.__mark-all-complete-button {
+  width: 100%;
+}
