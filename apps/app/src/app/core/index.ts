@@ -1,5 +1,5 @@
 import { provideEffects } from '@ngrx/effects';
-import { provideState, provideStore } from '@ngrx/store';
+import { provideState } from '@ngrx/store';
 import { TodosEffects } from './todos-base/todos.effects';
 import { todosState } from './todos-base/todos.state';
 
