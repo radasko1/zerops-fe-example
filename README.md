@@ -16,7 +16,9 @@ Start by installing dependencies (`npm i`).
 project:
   name: zerops-fe-example
   envVariables:
-    API_URL: https://api-${zeropsSubdomainHost}-3000.prg1.zerops.app/api
+    Z_API_URL: https://api-${zeropsSubdomainHost}-3000.prg1.zerops.app/api
+    Z_CLIENT_ID: ar
+    Z_PRODUCTION: true
 
 services:
   - hostname: db
