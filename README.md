@@ -1,6 +1,7 @@
 # Zerops frontend code style example
 
 ## Start development server
+Start by installing dependencies (`npm i`).
 
 ### app (frontend)
 1. copy `.env.example` -> `.env`
