@@ -21,7 +21,7 @@ export class ClientsService {
    * Otherwise, return NotFoundException (404)
    * @param clientId
    */
-  public async findOne(clientId: number) {
+  public async findOne(clientId: string) {
     const clientRef = await this.clientsRepository.findOne({
       where: { id: clientId },
     });

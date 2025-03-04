@@ -1,5 +1,12 @@
-<ul>
+<ul class="__client-list">
   @for (client of clients(); track client.id) {
-  <p>{{ client.name }}</p>
+  <li
+    class="__client-avatar"
+    [class.active]="client.id === activeClientId()"
+    (click)="onSelect$.next(client)"
+    [matTooltip]="client.name"
+  ></li>
   }
+  <!-- NEW CLIENT -->
+  <li class="__new-client __client-avatar" (click)="openUserForm$.next()">&plus;</li>
 </ul>

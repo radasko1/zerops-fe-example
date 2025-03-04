@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ClientsService } from './clients.service';
 import { ClientDto } from './models/client.dto';
@@ -14,7 +14,7 @@ export class ClientsController {
   }
 
   @Get(':id')
-  public findOne(@Param('id', ParseIntPipe) id: number) {
+  public findOne(@Param('id') id: string) {
     return this.clientsService.findOne(id);
   }
 

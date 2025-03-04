@@ -1,8 +1,7 @@
+<z-todos-clients [clients]="state().clients"/>
+
 <mat-card class="__add-form-card">
-  <z-todo-add-form
-    [formInstance]="formInstance"
-    (add)="onAdd$.next($event)"
-  />
+  <z-todo-add-form [formInstance]="formInstance" (add)="onAdd$.next($event)" />
 </mat-card>
 
 <div class="__actions-wrap">

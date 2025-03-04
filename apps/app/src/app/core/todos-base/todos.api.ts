@@ -1,12 +1,6 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {
-  TodoAddPayload,
-  TodoAddResponse,
-  TodoEntity,
-  TodoUpdatePayload,
-  TodoUpdateResponse
-} from './todos.model';
+import { inject, Injectable } from '@angular/core';
+import { TodoAddPayload, TodoAddResponse, TodoEntity, TodoUpdatePayload, TodoUpdateResponse } from './todos.model';
 
 @Injectable({ providedIn: 'root' })
 export class TodosApi {
@@ -35,9 +29,9 @@ export class TodosApi {
     );
   }
 
-  search$() {
+  search$(clientId = this.#clientId) {
     return this.#httpClient.get<TodoEntity[]>(
-      `${this.#apiUrl}?clientId=${this.#clientId}`
+      `${this.#apiUrl}?clientId=${clientId}`
     );
   }
 

@@ -1,0 +1,31 @@
+.__client-list {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 8px 0;
+  padding: 0;
+}
+
+.__client-avatar {
+  border-radius: 50%;
+  border: 2px solid transparent;
+  width: 48px;
+  height: 48px;
+  display: block;
+  background: #fff;
+  cursor: pointer;
+  margin: 4px;
+}
+.__client-avatar.active {
+  border-color: blue;
+}
+
+.__new-client {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  font-weight: 500;
+  border-color: lawngreen;
+}

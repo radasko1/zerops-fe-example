@@ -5,16 +5,24 @@ import { Client, ClientState } from './client.model';
 const CLIENT_FEATURE = 'clients';
 
 const initialClientState: ClientState = {
-  clients: [],
+  data: [],
+  activeClientId: undefined,
 };
 
 export const clientsActions = createActionGroup({
   source: CLIENT_FEATURE,
   events: {
-    init: emptyProps(),
+    load: emptyProps(),
+    loadSuccess: props<{ response: Client[] }>(),
+    loadFail: emptyProps(),
+
     add: props<{ name: string }>(),
-    'add success': props<{ response: Client }>(),
-    'add fail': emptyProps(),
+    addSuccess: props<{ response: Client }>(),
+    addFail: emptyProps(),
+
+    select: props<{ clientId: string }>(),
+
+    openModal: emptyProps(),
   },
 });
 
@@ -22,9 +30,17 @@ export const clientsState = createFeature({
   name: CLIENT_FEATURE,
   reducer: createReducer(
     initialClientState,
+    on(clientsActions.loadSuccess, (state, { response }) => ({
+      ...state,
+      data: response,
+    })),
     on(clientsActions.addSuccess, (state, { response }) => ({
       ...state,
-      clients: [...state.clients, response],
+      data: [...state.data, response],
+    })),
+    on(clientsActions.select, (state, { clientId }) => ({
+      ...state,
+      activeClientId: clientId,
     }))
   ),
 });
@@ -32,6 +48,8 @@ export const clientsState = createFeature({
 export function clientsEntity() {
   const store = inject(Store);
   return {
-    clients$: store.pipe(select(clientsState.selectClients)),
+    // select{propertyName}
+    clients$: store.pipe(select(clientsState.selectData)),
+    activeClientId$: store.pipe(select(clientsState.selectActiveClientId)),
   };
 }

@@ -1,8 +1,9 @@
 export interface Client {
-  id: number;
+  id: string;
   name: string;
 }
 
 export interface ClientState {
-  clients: Client[];
+  data: Client[];
+  activeClientId: string | undefined;
 }
