@@ -5,8 +5,16 @@
     [class.active]="client.id === activeClientId()"
     (click)="onSelect$.next(client)"
     [matTooltip]="client.name"
-  ></li>
+  >
+    {{ client.name | slice : 0 : 1 }}
+  </li>
   }
   <!-- NEW CLIENT -->
-  <li class="__new-client __client-avatar" (click)="openUserForm$.next()">&plus;</li>
+  <li
+    class="__new-client __client-avatar"
+    (click)="openUserForm$.next()"
+    matTooltip="Vytvořit uživatele"
+  >
+    &plus;
+  </li>
 </ul>

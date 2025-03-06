@@ -1,15 +1,19 @@
 import { inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { concatLatestFrom } from '@ngrx/operators';
+import { Store } from '@ngrx/store';
 import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
 import { TodoAddFormInstance } from '../../components/todo-add-form/todo-add-form.form';
+import { clientsState } from '../clients-base/clients.state';
 import { TodosApi } from './todos.api';
 import { todosActions } from './todos.state';
 
 @Injectable()
-export class TodosEffects implements OnInitEffects {
+export class TodosEffects {
   // deps
   #actions$ = inject(Actions);
+  #store = inject(Store);
   #api = inject(TodosApi);
   #snack = inject(MatSnackBar);
   #todoAddFormInstance = inject(TodoAddFormInstance);
@@ -39,17 +43,20 @@ export class TodosEffects implements OnInitEffects {
     )
   );
 
-  add$ = createEffect(() =>
-    this.#actions$.pipe(
+  add$ = createEffect(() => {
+    return this.#actions$.pipe(
       ofType(todosActions.add),
-      switchMap(({ payload }) =>
-        this.#api.add$(payload).pipe(
+      concatLatestFrom(() =>
+        this.#store.select(clientsState.selectActiveClientId)
+      ),
+      switchMap(([todoPayload, activeClientId]) =>
+        this.#api.add$(todoPayload.payload, activeClientId).pipe(
           map((res) => todosActions.addSuccess({ res })),
           catchError(() => of(todosActions.addFail()))
         )
       )
-    )
-  );
+    );
+  });
 
   onAddResetAddForm$ = createEffect(
     () =>

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Client } from './client.model';
+import { Client, ClientPayload } from './client.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +13,7 @@ export class ClientsApi {
     return this.httpClient.get<Client[]>(`${this.apiUrl}`);
   }
 
-  public create$(name: string) {
-    return this.httpClient.post<Client>(`${this.apiUrl}`, { name });
+  public create$(ClientPayload: ClientPayload) {
+    return this.httpClient.post<Client>(`${this.apiUrl}`, ClientPayload);
   }
 }

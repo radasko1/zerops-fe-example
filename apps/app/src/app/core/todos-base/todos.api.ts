@@ -4,16 +4,16 @@ import { TodoAddPayload, TodoAddResponse, TodoEntity, TodoUpdatePayload, TodoUpd
 
 @Injectable({ providedIn: 'root' })
 export class TodosApi {
-
   #httpClient = inject(HttpClient);
   #apiUrl = `${process.env.Z_API_URL}/todos`;
   #clientId = process.env.Z_CLIENT_ID;
 
-  add$(data: TodoAddPayload) {
-    return this.#httpClient.post<TodoAddResponse>(
-      this.#apiUrl,
-      { ...data, clientId: this.#clientId }
-    );
+  // You can define 'clientId' of new task
+  add$(data: TodoAddPayload, clientId = this.#clientId) {
+    return this.#httpClient.post<TodoAddResponse>(this.#apiUrl, {
+      ...data,
+      clientId: clientId,
+    });
   }
 
   update$(id: number, data: TodoUpdatePayload) {
@@ -24,9 +24,7 @@ export class TodosApi {
   }
 
   delete$(id: number) {
-    return this.#httpClient.delete(
-      `${this.#apiUrl}/${id}`
-    );
+    return this.#httpClient.delete(`${this.#apiUrl}/${id}`);
   }
 
   search$(clientId = this.#clientId) {
@@ -41,5 +39,4 @@ export class TodosApi {
       {}
     );
   }
-
 }

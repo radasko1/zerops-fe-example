@@ -1,4 +1,4 @@
-export class ClientDto {
+export interface ClientPayload {
   name: string;
   email: string;
 }

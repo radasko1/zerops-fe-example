@@ -18,42 +18,58 @@ export class ClientsEffects implements OnInitEffects {
       ofType(clientsActions.load),
       switchMap(() =>
         this.clientApi.getAll$().pipe(
-          map((clients) => clientsActions.loadSuccess({ response: clients })),
+          map((clients) => {
+            return clientsActions.loadSuccess({ response: clients });
+          }),
           catchError(() => of(clientsActions.loadFail()))
         )
       )
     )
   );
 
-  select$ = createEffect(() =>
-    this.actions.pipe(
+  selectFirstUser$ = createEffect(() => {
+    return this.actions.pipe(
+      ofType(clientsActions.loadSuccess),
+      map(({ response }) => {
+        return (
+          response &&
+          response[0] &&
+          clientsActions.select({ clientId: response[0].id })
+        );
+      })
+    );
+  });
+
+  select$ = createEffect(() => {
+    return this.actions.pipe(
       ofType(clientsActions.select),
       map(({ clientId }) => todosActions.search({ clientId }))
-    )
-  );
+    );
+  });
 
   openUserFormModal$ = createEffect(
-    () =>
-      this.actions.pipe(
+    () => {
+      return this.actions.pipe(
         ofType(clientsActions.openModal),
         tap(() => this.showUserFormModal())
-      ),
+      );
+    },
     {
       dispatch: false,
     }
   );
 
-  addNewClient$ = createEffect(() =>
-    this.actions.pipe(
+  addNewClient$ = createEffect(() => {
+    return this.actions.pipe(
       ofType(clientsActions.add),
-      switchMap(({ name }) =>
-        this.clientApi.create$(name).pipe(
+      switchMap(({ clientPayload }) => {
+        return this.clientApi.create$(clientPayload).pipe(
           map((client) => clientsActions.addSuccess({ response: client })),
           catchError(() => of(clientsActions.addFail()))
-        )
-      )
-    )
-  );
+        );
+      })
+    );
+  });
 
   private showUserFormModal() {
     this.modal.open(ClientAddFormComponent);

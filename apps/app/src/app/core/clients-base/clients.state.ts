@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { createActionGroup, createFeature, createReducer, emptyProps, on, props, select, Store } from '@ngrx/store';
-import { Client, ClientState } from './client.model';
+import { Client, ClientPayload, ClientState } from './client.model';
 
 const CLIENT_FEATURE = 'clients';
 
@@ -16,7 +16,7 @@ export const clientsActions = createActionGroup({
     loadSuccess: props<{ response: Client[] }>(),
     loadFail: emptyProps(),
 
-    add: props<{ name: string }>(),
+    add: props<{ clientPayload: ClientPayload }>(),
     addSuccess: props<{ response: Client }>(),
     addFail: emptyProps(),
 

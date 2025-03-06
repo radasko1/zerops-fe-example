@@ -1,9 +1,26 @@
+<h2 mat-dialog-title>Vytvořit nového uživatele</h2>
 <mat-dialog-content>
-  <form class="__form" (ngSubmit)="onSubmit$.next()">
+  <form class="__form" [formGroup]="userFormGroup">
     <mat-form-field>
       <mat-label>Jméno</mat-label>
-      <input matInput type="text" [formControl]="userName" />
+      <input matInput type="text" formControlName="name" name="user_name" />
     </mat-form-field>
-    <button mat-button color="primary" type="submit">Vytvořit</button>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput type="text" formControlName="email" name="user_email" />
+    </mat-form-field>
   </form>
 </mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Zavřít</button>
+  <button
+    mat-button
+    color="primary"
+    type="button"
+    [disabled]="!isFormValid"
+    (click)="createClient$.next()"
+    cdkFocusInitial
+  >
+    Vytvořit
+  </button>
+</mat-dialog-actions>
