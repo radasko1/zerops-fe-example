@@ -1,4 +1,5 @@
 zerops:
+  # Nest.js
   - setup: api
     build:
       base: nodejs@22
@@ -15,10 +16,16 @@ zerops:
       start: node dist/apps/api/main.js
       envVariables:
         DB_URL: ${db_connectionString}
+        DATABASE_HOST: db
+        DATABASE_NAME: db
+        DATABASE_PASSWORD: ${db_password}
+        DATABASE_PORT: "5432"
+        DATABASE_USERNAME: db
       ports:
         - port: 3000
           httpSupport: true
 
+  # Angular
   - setup: app
     build:
       base: nodejs@22
@@ -34,3 +41,7 @@ zerops:
       envReplace:
         delimiter: '%%'
         target: ./
+      routing:
+        redirects:
+          - from: /*
+            to: /index.html
