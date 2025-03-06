@@ -143,7 +143,7 @@ export class TodosEffects {
     this.#snack.open(message, 'Zavřít', { horizontalPosition: 'start' });
   }
 
-  ngrxOnInitEffects() {
-    return todosActions.init();
-  }
+  // ngrxOnInitEffects() {
+  //   return todosActions.init();
+  // }
 }

@@ -45,6 +45,7 @@ export const todosState = createFeature({
   name: FEATURE_NAME,
   reducer: createReducer(
     initialState,
+    // todo memoize
     on(todosActions.searchSuccess, (state, { res }) => ({
       ...state,
       data: res,
