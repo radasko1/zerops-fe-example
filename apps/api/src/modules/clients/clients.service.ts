@@ -11,7 +11,6 @@ export class ClientsService {
     private readonly clientsRepository: Repository<Client>
   ) {}
 
-
   public async findAll() {
     return this.clientsRepository.find();
   }
@@ -39,5 +38,25 @@ export class ClientsService {
   public async create(client: ClientDto) {
     const createdClient = await this.clientsRepository.save(client);
     return createdClient;
+  }
+
+  /**
+   * Update user data
+   * @param id
+   * @param user
+   */
+  public async update(id: string, user: ClientDto) {
+    const updatedData = await this.clientsRepository.save({ id, ...user });
+    return updatedData;
+  }
+
+  /**
+   * Delete client record
+   * @param clientId
+   */
+  public async delete(clientId: string) {
+    const deleted = await this.clientsRepository.delete(clientId);
+    // TODO delete todos
+    return deleted.affected;
   }
 }

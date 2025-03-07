@@ -1,9 +1,9 @@
 <ul class="__client-list">
-  @for (client of clients(); track client.id) {
+  @for (client of users(); track client.id) {
   <li
     class="__client-avatar"
-    [class.active]="client.id === activeClientId()"
-    (click)="onSelect$.next(client)"
+    [class.active]="client.id === selectedUserId()"
+    (click)="onSelect.emit(client.id)"
     [matTooltip]="client.name"
   >
     {{ client.name | slice : 0 : 1 }}
@@ -12,7 +12,7 @@
   <!-- NEW CLIENT -->
   <li
     class="__new-client __client-avatar"
-    (click)="openUserForm$.next()"
+    (click)="onCreateUser.emit()"
     matTooltip="Vytvořit uživatele"
   >
     &plus;

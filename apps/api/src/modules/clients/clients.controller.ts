@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ClientsService } from './clients.service';
 import { ClientDto } from './models/client.dto';
@@ -21,5 +21,16 @@ export class ClientsController {
   @Post()
   public create(@Body() clientDto: ClientDto) {
     return this.clientsService.create(clientDto);
+  }
+
+  @Put(':id')
+  public update(@Param('id') id: string, @Body() clientDto: ClientDto) {
+    return this.clientsService.update(id, clientDto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public delete(@Param('id') id: string) {
+    return this.clientsService.delete(id);
   }
 }

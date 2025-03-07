@@ -1,0 +1,9 @@
+<h1 class="__title">User Management</h1>
+
+<button mat-flat-button color="primary" (click)="createUser$.next()">
+  Vytvořit uživatele
+</button>
+
+@for (user of usersList(); track user.id) {
+  <p>{{ user.name }}, {{ user.email }}</p>
+}

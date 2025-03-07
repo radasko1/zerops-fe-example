@@ -4,9 +4,7 @@ import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'z-app',
   templateUrl: './app.feature.html',
-  styleUrls: [ './app.feature.scss' ],
-  imports: [ RouterOutlet ]
+  styleUrls: ['./app.feature.scss'],
+  imports: [RouterOutlet],
 })
-export class AppFeature {
-
-}
+export class AppFeature {}

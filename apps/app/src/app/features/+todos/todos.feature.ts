@@ -1,15 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, merge, Subject } from 'rxjs';
 import { TodoAddFormComponent } from '../../components/todo-add-form/todo-add-form.component';
 import { TodoAddFormInstance } from '../../components/todo-add-form/todo-add-form.form';
 import { TodosActionsComponent } from '../../components/todos-actions/todos-actions.component';
-import { TodosClientsComponent } from '../../components/todos-clients/todos-clients.component';
 import { TodosCounterComponent } from '../../components/todos-counter/todos-counter.component';
 import { TodosListComponent } from '../../components/todos-list/todos-list.component';
-import { clientsEntity } from '../../core/clients-base/clients.state';
+import { UsersListComponent } from '../../components/users-list/users-list.component';
+import { clientsActions, clientsEntity, clientsState } from '../../core/clients-base/clients.state';
 import { TodoAddPayload, TodoUpdatePayload } from '../../core/todos-base/todos.model';
 import { todosActions, todosEntity } from '../../core/todos-base/todos.state';
 import { filterCompletedTodos } from '../../core/todos-base/todos.utils';
@@ -26,7 +28,9 @@ import { filterCompletedTodos } from '../../core/todos-base/todos.utils';
     TodosActionsComponent,
     TodosListComponent,
     TodosCounterComponent,
-    TodosClientsComponent,
+    UsersListComponent,
+    RouterLink,
+    MatButton,
   ],
 })
 export class TodosFeature {
@@ -41,6 +45,8 @@ export class TodosFeature {
   onUpdate$ = new Subject<{ id: number; payload: TodoUpdatePayload }>();
   onDelete$ = new Subject<number>();
   onMarkAllComplete$ = new Subject<void>();
+  onSelectUser$ = new Subject<string>();
+  onCreateNewUser$ = new Subject<void>();
 
   // data
   hideCompletedSignal = signal(false);
@@ -50,12 +56,16 @@ export class TodosFeature {
       ? filterCompletedTodos(this.todosSignal())
       : this.todosSignal()
   );
-  clientsSignal = toSignal(this.#clientsEntity.clients$); // added
+  clients = toSignal(this.#store.select(clientsState.selectData), {
+    initialValue: [],
+  });
+  selectedUserId = toSignal(
+    this.#store.select(clientsState.selectActiveClientId)
+  );
 
   // resolver
   state = computed(() => ({
     todos: this.todosSignal() || [],
-    clients: this.clientsSignal() || [], // added
     hideCompletedSignal: this.hideCompletedSignal(),
     visibleTodos: this.visibleTodos() || [],
   }));
@@ -73,13 +83,21 @@ export class TodosFeature {
   #markAllCompleteAction$ = this.onMarkAllComplete$.pipe(
     map(() => todosActions.markAllComplete())
   );
+  #onSelectUserAction$ = this.onSelectUser$.pipe(
+    map((userId) => clientsActions.select({ clientId: userId }))
+  );
+  #onCreateNewUserAction$ = this.onCreateNewUser$.pipe(
+    map(() => clientsActions.showCreateModal())
+  );
 
   constructor() {
     merge(
       this.#addAction$,
       this.#updateAction$,
       this.#deleteAction$,
-      this.#markAllCompleteAction$
+      this.#markAllCompleteAction$,
+      this.#onSelectUserAction$,
+      this.#onCreateNewUserAction$
     )
       .pipe(takeUntilDestroyed())
       .subscribe(this.#store);
