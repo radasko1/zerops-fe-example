@@ -18,13 +18,6 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  public async findOneWithTodos(userId: string) {
-    return this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['todos'],
-    });
-  }
-
   /**
    * Find result in database with specific id and return.
    * Otherwise, return NotFoundException (404)

@@ -61,11 +61,6 @@ export class UsersController {
     }
   }
 
-  @Get(':id/todos')
-  public async findUserWithTodos(@Param('id', ParseUUIDPipe) userId: string) {
-    return this.usersService.findOneWithTodos(userId);
-  }
-
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({

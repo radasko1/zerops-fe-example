@@ -76,6 +76,8 @@ export const usersState = createFeature({
     on(usersActions.deleteSuccess, (state, { deletedUserId }) => ({
       ...state,
       data: state.data.filter((user) => user.id !== deletedUserId),
+      activeUserId:
+        state.activeUserId === deletedUserId ? undefined : state.activeUserId,
     }))
   ),
 });

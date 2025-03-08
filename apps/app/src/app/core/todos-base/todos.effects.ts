@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
 import { TodoAddFormInstance } from '../../components/todo-add-form/todo-add-form.form';
 import { SharedService } from '../shared/shared.service';
-import { usersState } from '../users-base/users.state';
+import { usersActions, usersState } from '../users-base/users.state';
 import { TodosApi } from './todos.api';
 import { todosActions } from './todos.state';
 
@@ -85,6 +85,15 @@ export class TodosEffects implements OnInitEffects {
       )
     )
   );
+
+  updateDeleted$ = createEffect(() => {
+    return this.#actions$.pipe(
+      ofType(usersActions.deleteSuccess),
+      map(({ deletedUserId }) => {
+        return todosActions.updateDeleted({ deletedUserId });
+      })
+    );
+  });
 
   onUpdateSuccessShowSnackbar$ = createEffect(
     () =>

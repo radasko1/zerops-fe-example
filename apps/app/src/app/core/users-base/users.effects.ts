@@ -181,7 +181,9 @@ export class UsersEffects implements OnInitEffects {
     () =>
       this.actions.pipe(
         ofType(usersActions.deleteSuccess),
-        tap(() => this.shared.openSnack('Uživatel odebrán'))
+        tap(() =>
+          this.shared.openSnack('Uživatel byl odebrán společně s jeho úkoly')
+        )
       ),
     { dispatch: false }
   );

@@ -24,6 +24,7 @@ export const todosActions = createActionGroup({
     'add fail': emptyProps(),
 
     update: props<{ id: number; payload: TodoUpdatePayload }>(),
+    'update deleted': props<{ deletedUserId: string }>(),
     'update success': props<{ res: TodoUpdateResponse }>(),
     'update fail': emptyProps(),
 
@@ -65,6 +66,10 @@ export const todosState = createFeature({
     on(todosActions.deleteSuccess, (state, { id }) => ({
       ...state,
       data: state.data.filter((todo) => todo.id !== id),
+    })),
+    on(todosActions.updateDeleted, (state, { deletedUserId }) => ({
+      ...state,
+      data: state.data.filter((todo) => todo.userId !== deletedUserId),
     })),
     on(todosActions.markAllCompleteSuccess, (state) => ({
       ...state,
