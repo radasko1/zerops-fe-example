@@ -5,7 +5,7 @@ import { concatLatestFrom } from '@ngrx/operators';
 import { Store } from '@ngrx/store';
 import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
 import { TodoAddFormInstance } from '../../components/todo-add-form/todo-add-form.form';
-import { clientsState } from '../clients-base/clients.state';
+import { usersState } from '../users-base/users.state';
 import { TodosApi } from './todos.api';
 import { todosActions } from './todos.state';
 
@@ -47,10 +47,10 @@ export class TodosEffects {
     return this.#actions$.pipe(
       ofType(todosActions.add),
       concatLatestFrom(() =>
-        this.#store.select(clientsState.selectActiveClientId)
+        this.#store.select(usersState.selectActiveUserId)
       ),
-      switchMap(([todoPayload, activeClientId]) =>
-        this.#api.add$(todoPayload.payload, activeClientId).pipe(
+      switchMap(([todoPayload, activeUserId]) =>
+        this.#api.add$(todoPayload.payload, activeUserId).pipe(
           map((res) => todosActions.addSuccess({ res })),
           catchError(() => of(todosActions.addFail()))
         )

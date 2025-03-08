@@ -1,15 +1,15 @@
 <ul class="__client-list">
-  @for (client of users(); track client.id) {
+  @for (user of users(); track user.id) {
   <li
     class="__client-avatar"
-    [class.active]="client.id === selectedUserId()"
-    (click)="onSelect.emit(client.id)"
-    [matTooltip]="client.name"
+    [class.active]="user.id === selectedUserId()"
+    (click)="onSelect.emit(user.id)"
+    [matTooltip]="user.name"
   >
-    {{ client.name | slice : 0 : 1 }}
+    {{ user.name | slice : 0 : 1 }}
   </li>
   }
-  <!-- NEW CLIENT -->
+  <!-- NEW USER -->
   <li
     class="__new-client __client-avatar"
     (click)="onCreateUser.emit()"

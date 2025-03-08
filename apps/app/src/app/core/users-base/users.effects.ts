@@ -5,25 +5,25 @@ import { catchError, map, of, switchMap } from 'rxjs';
 import { UsersAddFormComponent } from '../../components/users-add-form/users-add-form.component';
 import { UsersDeleteModalComponent } from '../../components/users-delete-modal/users-delete-modal.component';
 import { todosActions } from '../todos-base/todos.state';
-import { createUserAction, updateUserAction } from './client.model';
-import { clientsActions } from './clients.state';
-import { UsersApi } from './users-api.service';
+import { createUserAction, updateUserAction } from './user.model';
+import { UsersApi } from './users.ap';
+import { usersActions } from './users.state';
 
 @Injectable()
-export class ClientsEffects implements OnInitEffects {
+export class UsersEffects implements OnInitEffects {
   private readonly actions = inject(Actions);
   private readonly clientApi = inject(UsersApi);
-  private readonly modal = inject(MatDialog);
+  private readonly dialog = inject(MatDialog);
 
   loadAll$ = createEffect(() => {
     return this.actions.pipe(
-      ofType(clientsActions.load),
+      ofType(usersActions.load),
       switchMap(() => {
         return this.clientApi.getAll$().pipe(
           map((clients) => {
-            return clientsActions.loadSuccess({ response: clients });
+            return usersActions.loadSuccess({ response: clients });
           }),
-          catchError(() => of(clientsActions.loadFail()))
+          catchError(() => of(usersActions.loadFail()))
         );
       })
     );
@@ -31,12 +31,12 @@ export class ClientsEffects implements OnInitEffects {
 
   selectFirstUser$ = createEffect(() => {
     return this.actions.pipe(
-      ofType(clientsActions.loadSuccess),
+      ofType(usersActions.loadSuccess),
       map(({ response }) => {
         return (
           response &&
           response[0] &&
-          clientsActions.select({ clientId: response[0].id })
+          usersActions.select({ clientId: response[0].id })
         );
       })
     );
@@ -44,14 +44,14 @@ export class ClientsEffects implements OnInitEffects {
 
   select$ = createEffect(() => {
     return this.actions.pipe(
-      ofType(clientsActions.select),
+      ofType(usersActions.select),
       map(({ clientId }) => todosActions.search({ clientId }))
     );
   });
 
   showCreateModal$ = createEffect(() => {
     return this.actions.pipe(
-      ofType(clientsActions.showCreateModal),
+      ofType(usersActions.showCreateModal),
       switchMap(() => {
         return this.showUserFormModal({
           data: {
@@ -61,7 +61,7 @@ export class ClientsEffects implements OnInitEffects {
           .afterClosed()
           .pipe(
             map((dialogResult) => {
-              return clientsActions.closeModal({ result: dialogResult });
+              return usersActions.closeModal({ result: dialogResult });
             })
           );
       })
@@ -70,7 +70,7 @@ export class ClientsEffects implements OnInitEffects {
 
   showUpdateModal$ = createEffect(() => {
     return this.actions.pipe(
-      ofType(clientsActions.showEditModal),
+      ofType(usersActions.showEditModal),
       switchMap(({ userRef }) =>
         this.showUserFormModal({
           data: {
@@ -81,7 +81,7 @@ export class ClientsEffects implements OnInitEffects {
           .afterClosed()
           .pipe(
             map((dialogResult) => {
-              return clientsActions.closeModal({ result: dialogResult });
+              return usersActions.closeModal({ result: dialogResult });
             })
           )
       )
@@ -90,9 +90,9 @@ export class ClientsEffects implements OnInitEffects {
 
   showDeleteModal$ = createEffect(() => {
     return this.actions.pipe(
-      ofType(clientsActions.showDeleteModal),
+      ofType(usersActions.showDeleteModal),
       switchMap(({ userId }) => {
-        return this.modal
+        return this.dialog
           .open(UsersDeleteModalComponent, {
             data: {
               userId,
@@ -102,8 +102,8 @@ export class ClientsEffects implements OnInitEffects {
           .pipe(
             map((userId) => {
               return userId
-                ? clientsActions.delete(userId)
-                : clientsActions.closeModalSuccess();
+                ? usersActions.delete(userId)
+                : usersActions.closeModalSuccess();
             })
           );
       })
@@ -112,28 +112,28 @@ export class ClientsEffects implements OnInitEffects {
 
   closeModal$ = createEffect(() => {
     return this.actions.pipe(
-      ofType(clientsActions.closeModal),
+      ofType(usersActions.closeModal),
       map(({ result }) => {
         // Update
         if (result && result.action === updateUserAction) {
-          return clientsActions.update({ payload: result.payload });
+          return usersActions.update({ payload: result.payload });
         }
         // Create
         else if (result && result.action === createUserAction) {
-          return clientsActions.add({ payload: result.payload });
+          return usersActions.add({ payload: result.payload });
         }
-        return clientsActions.closeModalSuccess();
+        return usersActions.closeModalSuccess();
       })
     );
   });
 
   addNewClient$ = createEffect(() => {
     return this.actions.pipe(
-      ofType(clientsActions.add),
+      ofType(usersActions.add),
       switchMap(({ payload }) => {
         return this.clientApi.create$(payload).pipe(
-          map((client) => clientsActions.addSuccess({ response: client })),
-          catchError(() => of(clientsActions.addFail()))
+          map((client) => usersActions.addSuccess({ response: client })),
+          catchError(() => of(usersActions.addFail()))
         );
       })
     );
@@ -141,41 +141,40 @@ export class ClientsEffects implements OnInitEffects {
 
   updateClient$ = createEffect(() => {
     return this.actions.pipe(
-      ofType(clientsActions.update),
+      ofType(usersActions.update),
       switchMap(({ payload }) => {
         return this.clientApi.update$(payload).pipe(
-          map((client) => clientsActions.updateSuccess({ response: client })),
-          catchError(() => of(clientsActions.updateFail()))
+          map((client) => usersActions.updateSuccess({ response: client })),
+          catchError(() => of(usersActions.updateFail()))
         );
       })
     );
   });
 
-  // TODO add confirmation dialog
   deleteUser$ = createEffect(() => {
     return this.actions.pipe(
-      ofType(clientsActions.delete),
+      ofType(usersActions.delete),
       switchMap(({ userId }) => {
         return this.clientApi.delete$(userId).pipe(
           map(() =>
-            clientsActions.deleteSuccess({
+            usersActions.deleteSuccess({
               deletedUserId: userId,
             })
           ),
-          catchError(() => of(clientsActions.deleteFail()))
+          catchError(() => of(usersActions.deleteFail()))
         );
       })
     );
   });
 
   private showUserFormModal(config?: MatDialogConfig) {
-    return this.modal.open<UsersAddFormComponent>(
+    return this.dialog.open<UsersAddFormComponent>(
       UsersAddFormComponent,
       config
     );
   }
 
   ngrxOnInitEffects() {
-    return clientsActions.load();
+    return usersActions.load();
   }
 }

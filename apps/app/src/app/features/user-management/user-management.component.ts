@@ -15,8 +15,8 @@ import {
 } from '@angular/material/table';
 import { Store } from '@ngrx/store';
 import { map, merge, Subject } from 'rxjs';
-import { Client } from '../../core/clients-base/client.model';
-import { clientsActions, clientsState } from '../../core/clients-base/clients.state';
+import { User } from '../../core/users-base/user.model';
+import { usersActions, usersState } from '../../core/users-base/users.state';
 
 @Component({
   selector: 'user-management',
@@ -44,23 +44,23 @@ import { clientsActions, clientsState } from '../../core/clients-base/clients.st
 export class UserManagementComponent {
   private readonly store = inject(Store);
 
-  private users$ = this.store.select(clientsState.selectData);
+  private users$ = this.store.select(usersState.selectData);
 
   // Signal
   protected usersList = toSignal(this.users$, { initialValue: [] });
   // Observable trigger
   protected createUser$ = new Subject<void>();
-  protected editUser$ = new Subject<Client>();
+  protected editUser$ = new Subject<User>();
   protected deleteUser$ = new Subject<string>();
 
   protected readonly tableColumns = ['name', 'email', 'actions'];
 
   private createNewUserAction$ = this.createUser$.pipe(
-    map(() => clientsActions.showCreateModal())
+    map(() => usersActions.showCreateModal())
   );
   private editUserAction$ = this.editUser$.pipe(
     map((userRef) =>
-      clientsActions.showEditModal({
+      usersActions.showEditModal({
         userRef: {
           id: userRef.id,
           email: userRef.email,
@@ -70,7 +70,7 @@ export class UserManagementComponent {
     )
   );
   private deleteUserAction$ = this.deleteUser$.pipe(
-    map((userId) => clientsActions.showDeleteModal({ userId }))
+    map((userId) => usersActions.showDeleteModal({ userId }))
   );
 
   constructor() {

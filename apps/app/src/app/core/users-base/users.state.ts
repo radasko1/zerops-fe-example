@@ -1,34 +1,34 @@
 import { inject } from '@angular/core';
 import { createActionGroup, createFeature, createReducer, emptyProps, on, props, select, Store } from '@ngrx/store';
 import {
-  Client,
   CreateDialogFormResponse,
   UpdateDialogFormResponse,
+  User,
   UserFormData,
   UserPayload,
   UserState
-} from './client.model';
+} from './user.model';
 
-const CLIENT_FEATURE = 'clients';
+const USERS_FEATURE_NAME = 'users';
 
 const initialClientState: UserState = {
   data: [],
-  activeClientId: undefined,
+  activeUserId: undefined,
 };
 
-export const clientsActions = createActionGroup({
-  source: CLIENT_FEATURE,
+export const usersActions = createActionGroup({
+  source: USERS_FEATURE_NAME,
   events: {
     load: emptyProps(),
-    loadSuccess: props<{ response: Client[] }>(),
+    loadSuccess: props<{ response: User[] }>(),
     loadFail: emptyProps(),
 
     add: props<{ payload: UserPayload }>(),
-    addSuccess: props<{ response: Client }>(),
+    addSuccess: props<{ response: User }>(),
     addFail: emptyProps(),
 
     update: props<{ payload: UserFormData }>(),
-    updateSuccess: props<{ response: Client }>(),
+    updateSuccess: props<{ response: User }>(),
     updateFail: emptyProps(),
 
     delete: props<{ userId: string }>(),
@@ -47,33 +47,33 @@ export const clientsActions = createActionGroup({
   },
 });
 
-export const clientsState = createFeature({
-  name: CLIENT_FEATURE,
+export const usersState = createFeature({
+  name: USERS_FEATURE_NAME,
   reducer: createReducer(
     initialClientState,
     //
-    on(clientsActions.loadSuccess, (state, { response }) => ({
+    on(usersActions.loadSuccess, (state, { response }) => ({
       ...state,
       data: response,
     })),
     //
-    on(clientsActions.select, (state, { clientId }) => ({
+    on(usersActions.select, (state, { clientId: userId }) => ({
       ...state,
-      activeClientId: clientId,
+      activeUserId: userId,
     })),
     //
-    on(clientsActions.addSuccess, (state, { response }) => ({
+    on(usersActions.addSuccess, (state, { response }) => ({
       ...state,
       data: [...state.data, response],
     })),
-    on(clientsActions.updateSuccess, (state, { response }) => ({
+    on(usersActions.updateSuccess, (state, { response }) => ({
       ...state,
       data: state.data.map((user) =>
         user.id === response.id ? response : user
       ),
     })),
     //
-    on(clientsActions.deleteSuccess, (state, { deletedUserId }) => ({
+    on(usersActions.deleteSuccess, (state, { deletedUserId }) => ({
       ...state,
       data: state.data.filter((user) => user.id !== deletedUserId),
     }))
@@ -84,7 +84,7 @@ export function clientsEntity() {
   const store = inject(Store);
   return {
     // select{propertyName}
-    clients$: store.pipe(select(clientsState.selectData)),
-    activeClientId$: store.pipe(select(clientsState.selectActiveClientId)),
+    clients$: store.pipe(select(usersState.selectData)),
+    activeUserId$: store.pipe(select(usersState.selectActiveUserId)),
   };
 }

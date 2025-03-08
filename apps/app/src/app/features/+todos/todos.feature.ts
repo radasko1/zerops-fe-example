@@ -11,10 +11,10 @@ import { TodosActionsComponent } from '../../components/todos-actions/todos-acti
 import { TodosCounterComponent } from '../../components/todos-counter/todos-counter.component';
 import { TodosListComponent } from '../../components/todos-list/todos-list.component';
 import { UsersListComponent } from '../../components/users-list/users-list.component';
-import { clientsActions, clientsEntity, clientsState } from '../../core/clients-base/clients.state';
 import { TodoAddPayload, TodoUpdatePayload } from '../../core/todos-base/todos.model';
 import { todosActions, todosEntity } from '../../core/todos-base/todos.state';
 import { filterCompletedTodos } from '../../core/todos-base/todos.utils';
+import { clientsEntity, usersActions, usersState } from '../../core/users-base/users.state';
 
 @Component({
   selector: 'z-todos',
@@ -56,11 +56,11 @@ export class TodosFeature {
       ? filterCompletedTodos(this.todosSignal())
       : this.todosSignal()
   );
-  clients = toSignal(this.#store.select(clientsState.selectData), {
+  clients = toSignal(this.#store.select(usersState.selectData), {
     initialValue: [],
   });
   selectedUserId = toSignal(
-    this.#store.select(clientsState.selectActiveClientId)
+    this.#store.select(usersState.selectActiveUserId)
   );
 
   // resolver
@@ -84,10 +84,10 @@ export class TodosFeature {
     map(() => todosActions.markAllComplete())
   );
   #onSelectUserAction$ = this.onSelectUser$.pipe(
-    map((userId) => clientsActions.select({ clientId: userId }))
+    map((userId) => usersActions.select({ clientId: userId }))
   );
   #onCreateNewUserAction$ = this.onCreateNewUser$.pipe(
-    map(() => clientsActions.showCreateModal())
+    map(() => usersActions.showCreateModal())
   );
 
   constructor() {

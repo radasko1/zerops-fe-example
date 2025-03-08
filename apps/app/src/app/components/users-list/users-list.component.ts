@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MatTooltip } from '@angular/material/tooltip';
-import { Client } from '../../core/clients-base/client.model';
+import { User } from '../../core/users-base/user.model';
 
 @Component({
   selector: 'users-list',
@@ -12,7 +12,7 @@ import { Client } from '../../core/clients-base/client.model';
   imports: [CommonModule, MatTooltip],
 })
 export class UsersListComponent {
-  users = input<Client[]>([]);
+  users = input<User[]>([]);
   selectedUserId = input<string>();
   onSelect = output<string>();
   onCreateUser = output<void>();

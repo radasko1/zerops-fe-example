@@ -19,7 +19,7 @@ import {
   updateUserAction,
   userFormAction,
   UserFormData
-} from '../../core/clients-base/client.model';
+} from '../../core/users-base/user.model';
 
 @Component({
   selector: 'users-add-form',
@@ -82,7 +82,7 @@ export class UsersAddFormComponent {
       return;
     }
 
-    const clientPayload = this.userFormGroup.getRawValue();
+    const userPayload = this.userFormGroup.getRawValue();
     this.userFormGroup.reset();
     this.userFormGroup.markAsUntouched();
 
@@ -90,11 +90,11 @@ export class UsersAddFormComponent {
       this.dialogData.action === createUserAction
         ? ({
             action: this.dialogData.action,
-            payload: clientPayload,
+            payload: userPayload,
           } as CreateDialogFormResponse)
         : ({
             action: this.dialogData.action,
-            payload: { ...clientPayload, id: this.dialogData.userData?.id },
+            payload: { ...userPayload, id: this.dialogData.userData?.id },
           } as UpdateDialogFormResponse);
 
     this.dialogRef.close(response);

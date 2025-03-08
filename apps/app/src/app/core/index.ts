@@ -1,15 +1,15 @@
 import { provideEffects } from '@ngrx/effects';
 import { provideState } from '@ngrx/store';
-import { ClientsEffects } from './clients-base/clients.effects';
-import { clientsState } from './clients-base/clients.state';
 import { TodosEffects } from './todos-base/todos.effects';
 import { todosState } from './todos-base/todos.state';
+import { UsersEffects } from './users-base/users.effects';
+import { usersState } from './users-base/users.state';
 
 export const CORE_EFFECTS = [
-  provideEffects([TodosEffects, ClientsEffects]),
+  provideEffects([TodosEffects, UsersEffects]),
 ] as const;
 
 export const CORE_STATE = [
   provideState(todosState),
-  provideState(clientsState),
+  provideState(usersState),
 ] as const;

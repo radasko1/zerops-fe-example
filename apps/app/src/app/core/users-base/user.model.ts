@@ -3,15 +3,15 @@ export const updateUserAction = 'UPDATE_USER';
 
 export type userFormAction = typeof createUserAction | typeof updateUserAction;
 
-export interface Client {
+export interface User {
   id: string;
   name: string;
   email: string;
 }
 
 export interface UserState {
-  data: Client[];
-  activeClientId: string | undefined;
+  data: User[];
+  activeUserId: string | undefined;
 }
 
 export interface UserPayload {
@@ -20,24 +20,24 @@ export interface UserPayload {
 }
 
 export interface UserFormData {
-  name: Client['name'];
-  email: Client['email'];
-  id?: Client['id'];
+  name: User['name'];
+  email: User['email'];
+  id?: User['id'];
 }
 
 export interface UpdateDialogFormResponse {
   action: 'UPDATE_USER';
   payload: {
-    id: Client['id'];
-    name: Client['name'];
-    email: Client['email'];
+    id: User['id'];
+    name: User['name'];
+    email: User['email'];
   };
 }
 
 export interface CreateDialogFormResponse {
   action: 'CREATE_USER';
   payload: {
-    name: Client['name'];
-    email: Client['email'];
+    name: User['name'];
+    email: User['email'];
   };
 }
