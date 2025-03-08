@@ -20,6 +20,10 @@ mat-form-field {
   width: 100%;
 }
 
+.__navigation-wrapper {
+  margin-bottom: 24px;
+}
+
 .__navigation-link {
   .mdc-button__label {
     display: flex;
@@ -46,8 +50,8 @@ mat-form-field {
   padding-left: 24px;
   padding-right: 24px;
   margin: 0 auto;
-  padding-bottom: 48px;
-  padding-top: 48px;
+  padding-bottom: 24px;
+  padding-top: 24px;
 }
 
 .__wrap-xl {

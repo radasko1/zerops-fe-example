@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { UsersAddFormComponent } from '../../components/users-add-form/users-add-form.component';
 import { UsersDeleteModalComponent } from '../../components/users-delete-modal/users-delete-modal.component';
+import { SharedService } from '../shared/shared.service';
 import { createUserAction, updateUserAction } from './user.model';
 import { UsersApi } from './users.api';
 import { usersActions } from './users.state';
@@ -13,6 +14,7 @@ export class UsersEffects implements OnInitEffects {
   private readonly actions = inject(Actions);
   private readonly usersApi = inject(UsersApi);
   private readonly dialog = inject(MatDialog);
+  private readonly shared = inject(SharedService);
 
   loadAll$ = createEffect(() => {
     return this.actions.pipe(
@@ -129,6 +131,15 @@ export class UsersEffects implements OnInitEffects {
     );
   });
 
+  addUserSuccess$ = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(usersActions.addSuccess),
+        tap(() => this.shared.openSnack('Uživatel přidán'))
+      ),
+    { dispatch: false }
+  );
+
   updateUser$ = createEffect(() => {
     return this.actions.pipe(
       ofType(usersActions.update),
@@ -140,6 +151,15 @@ export class UsersEffects implements OnInitEffects {
       })
     );
   });
+
+  updateUserSuccess$ = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(usersActions.updateSuccess),
+        tap(() => this.shared.openSnack('Uživatel upraven'))
+      ),
+    { dispatch: false }
+  );
 
   deleteUser$ = createEffect(() => {
     return this.actions.pipe(
@@ -156,6 +176,15 @@ export class UsersEffects implements OnInitEffects {
       })
     );
   });
+
+  deleteUserSuccess$ = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(usersActions.deleteSuccess),
+        tap(() => this.shared.openSnack('Uživatel odebrán'))
+      ),
+    { dispatch: false }
+  );
 
   private showUserFormModal(config?: MatDialogConfig) {
     return this.dialog.open<UsersAddFormComponent>(

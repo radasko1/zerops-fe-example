@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { TodoEntity, TodoUpdatePayload } from '../../core/todos-base/todos.model';
+import { parseFormData } from '../../utils/parse-form-data.util';
 
 @Component({
   selector: 'z-todo-item',
@@ -41,9 +42,10 @@ export class TodoItemComponent {
       const value = this.data();
       if (!value) return;
 
+      const parsedValue = parseFormData(value);
       this.form.setValue({
         completed: value.completed,
-        text: value.text,
+        text: parsedValue.text,
       });
     });
   }

@@ -16,6 +16,7 @@ import { TodoAddPayload, TodoCreatePayload, TodoUpdatePayload } from '../../core
 import { todosActions } from '../../core/todos-base/todos.state';
 import { filterCompletedTodos } from '../../core/todos-base/todos.utils';
 import { usersActions, usersState } from '../../core/users-base/users.state';
+import { parseFormData } from '../../utils/parse-form-data.util';
 
 @Component({
   selector: 'z-todos',
@@ -69,10 +70,10 @@ export class TodosFeature {
   // action streams
   #addAction$ = this.onAdd$.pipe(
     map((payload) => {
-      const todo = {
+      const todo = parseFormData({
         ...payload,
         userId: this.selectedUserId(),
-      } as TodoCreatePayload;
+      } as TodoCreatePayload);
       return todosActions.add({ payload: todo });
     })
   );

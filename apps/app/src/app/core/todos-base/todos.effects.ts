@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
 import { Store } from '@ngrx/store';
 import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
 import { TodoAddFormInstance } from '../../components/todo-add-form/todo-add-form.form';
+import { SharedService } from '../shared/shared.service';
 import { usersState } from '../users-base/users.state';
 import { TodosApi } from './todos.api';
 import { todosActions } from './todos.state';
@@ -15,7 +15,7 @@ export class TodosEffects implements OnInitEffects {
   #actions$ = inject(Actions);
   #store = inject(Store);
   #api = inject(TodosApi);
-  #snack = inject(MatSnackBar);
+  #shared = inject(SharedService);
   #todoAddFormInstance = inject(TodoAddFormInstance);
 
   // effects
@@ -69,7 +69,7 @@ export class TodosEffects implements OnInitEffects {
     () =>
       this.#actions$.pipe(
         ofType(todosActions.addSuccess),
-        tap(() => this.#openSnack('Úkol přidán'))
+        tap(() => this.#shared.openSnack('Úkol přidán'))
       ),
     { dispatch: false }
   );
@@ -90,7 +90,7 @@ export class TodosEffects implements OnInitEffects {
     () =>
       this.#actions$.pipe(
         ofType(todosActions.updateSuccess),
-        tap(() => this.#openSnack('Úkol upraven'))
+        tap(() => this.#shared.openSnack('Úkol upraven'))
       ),
     { dispatch: false }
   );
@@ -111,7 +111,7 @@ export class TodosEffects implements OnInitEffects {
     () =>
       this.#actions$.pipe(
         ofType(todosActions.deleteSuccess),
-        tap(() => this.#openSnack('Úkol smazán'))
+        tap(() => this.#shared.openSnack('Úkol smazán'))
       ),
     { dispatch: false }
   );
@@ -132,14 +132,10 @@ export class TodosEffects implements OnInitEffects {
     () =>
       this.#actions$.pipe(
         ofType(todosActions.markAllCompleteSuccess),
-        tap(() => this.#openSnack('Vše označeno jako vyřešené'))
+        tap(() => this.#shared.openSnack('Vše označeno jako vyřešené'))
       ),
     { dispatch: false }
   );
-
-  #openSnack(message: string) {
-    this.#snack.open(message, 'Zavřít', { horizontalPosition: 'start' });
-  }
 
   ngrxOnInitEffects() {
     return todosActions.init();

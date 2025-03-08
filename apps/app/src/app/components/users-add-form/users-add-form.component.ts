@@ -20,6 +20,7 @@ import {
   userFormAction,
   UserFormData
 } from '../../core/users-base/user.model';
+import { parseFormData } from '../../utils/parse-form-data.util';
 
 @Component({
   selector: 'users-add-form',
@@ -82,7 +83,7 @@ export class UsersAddFormComponent {
       return;
     }
 
-    const userPayload = this.userFormGroup.getRawValue();
+    const userPayload = parseFormData(this.userFormGroup.getRawValue());
     this.userFormGroup.reset();
     this.userFormGroup.markAsUntouched();
 
