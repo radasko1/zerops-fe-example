@@ -1,10 +1,10 @@
 <div class="__grid">
-
   <div>
     <mat-slide-toggle
       #toggleRef
       [checked]="hideCompletedState()"
-      (toggleChange)="toggleCompleted.emit(!toggleRef.checked)">
+      (toggleChange)="toggleCompleted.emit(!toggleRef.checked)"
+    >
       Skrýt vyřešené
     </mat-slide-toggle>
   </div>
@@ -14,9 +14,10 @@
       class="__mark-all-complete-button"
       mat-flat-button
       (click)="markAllComplete.emit()"
-      color="accent">
-      <mat-icon fontSet="material-icons-outlined">check_circle</mat-icon> Označit vše jako vyřešené
+      color="accent"
+    >
+      <mat-icon fontSet="material-icons-outlined">check_circle</mat-icon>
+      Označit vše jako vyřešené
     </button>
   </div>
-
 </div>

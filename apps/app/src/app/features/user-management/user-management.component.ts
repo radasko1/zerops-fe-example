@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import {
@@ -13,6 +13,7 @@ import {
   MatTable,
   MatTableModule
 } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, merge, Subject } from 'rxjs';
 import { User } from '../../core/users-base/user.model';
@@ -39,6 +40,8 @@ import { usersActions, usersState } from '../../core/users-base/users.state';
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
+    MatAnchor,
+    RouterLink,
   ],
 })
 export class UserManagementComponent {

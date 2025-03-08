@@ -1,16 +1,5 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Get,
-  Patch,
-  Param,
-  Delete,
-  ParseIntPipe,
-  Query,
-  Put,
-} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateTodoDto } from './dtos/create.todo.dto';
 import { UpdateTodoDto } from './dtos/update.todo.dto';
 import { TodosService } from './todos.service';
@@ -22,7 +11,10 @@ export class TodosController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new todo' })
-  @ApiResponse({ status: 201, description: 'The todo has been successfully created.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The todo has been successfully created.',
+  })
   create(@Body() createTodoDto: CreateTodoDto) {
     return this.todosService.create(createTodoDto);
   }
@@ -41,7 +33,7 @@ export class TodosController {
     return this.todosService.findOne(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Update a todo by id' })
   @ApiResponse({ status: 200, description: 'The updated todo.' })
   update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateTodoDto) {
@@ -61,5 +53,4 @@ export class TodosController {
   markAllAsCompleted(@Query('clientId') clientId: string) {
     return this.todosService.markAllAsCompleted(clientId);
   }
-
 }

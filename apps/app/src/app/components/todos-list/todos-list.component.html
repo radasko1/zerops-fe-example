@@ -1,12 +1,14 @@
 @for (item of todos(); track item.id) {
-  <div class="__todo-item-wrap">
-    <z-todo-item
-      (delete)="deleteItem.emit(item.id)"
-      (update)="updateItem.emit({
+<div class="__todo-item-wrap">
+  <z-todo-item
+    (delete)="deleteItem.emit(item.id)"
+    (update)="
+      updateItem.emit({
         id: item.id,
         payload: $event
-      })"
-      [data]="item"
-    />
-  </div>
+      })
+    "
+    [data]="item"
+  />
+</div>
 }

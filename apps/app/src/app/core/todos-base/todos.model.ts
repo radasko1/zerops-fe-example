@@ -9,6 +9,7 @@ export interface TodoEntity {
   text: string;
   clientId: string;
   completed: boolean;
+  userId: string;
 }
 
 export interface TodoAddPayload {
@@ -16,11 +17,15 @@ export interface TodoAddPayload {
   completed: boolean;
 }
 
-export interface TodoAddResponse extends TodoEntity { }
+export interface TodoCreatePayload extends TodoAddPayload {
+  userId: string;
+}
+
+export interface TodoAddResponse extends TodoEntity {}
 
 export interface TodoUpdatePayload {
   text: string;
   completed: boolean;
 }
 
-export interface TodoUpdateResponse extends TodoEntity { }
+export interface TodoUpdateResponse extends TodoEntity {}

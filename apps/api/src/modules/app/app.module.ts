@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ClientsModule } from '../clients/clients.module';
 import { TodosModule } from '../todos/todos.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { TodosModule } from '../todos/todos.module';
       synchronize: true,
     }),
     TodosModule,
-    ClientsModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

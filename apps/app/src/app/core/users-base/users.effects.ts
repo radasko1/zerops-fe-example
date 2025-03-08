@@ -4,24 +4,23 @@ import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { UsersAddFormComponent } from '../../components/users-add-form/users-add-form.component';
 import { UsersDeleteModalComponent } from '../../components/users-delete-modal/users-delete-modal.component';
-import { todosActions } from '../todos-base/todos.state';
 import { createUserAction, updateUserAction } from './user.model';
-import { UsersApi } from './users.ap';
+import { UsersApi } from './users.api';
 import { usersActions } from './users.state';
 
 @Injectable()
 export class UsersEffects implements OnInitEffects {
   private readonly actions = inject(Actions);
-  private readonly clientApi = inject(UsersApi);
+  private readonly usersApi = inject(UsersApi);
   private readonly dialog = inject(MatDialog);
 
   loadAll$ = createEffect(() => {
     return this.actions.pipe(
       ofType(usersActions.load),
       switchMap(() => {
-        return this.clientApi.getAll$().pipe(
-          map((clients) => {
-            return usersActions.loadSuccess({ response: clients });
+        return this.usersApi.getAll$().pipe(
+          map((users) => {
+            return usersActions.loadSuccess({ response: users });
           }),
           catchError(() => of(usersActions.loadFail()))
         );
@@ -33,19 +32,10 @@ export class UsersEffects implements OnInitEffects {
     return this.actions.pipe(
       ofType(usersActions.loadSuccess),
       map(({ response }) => {
-        return (
-          response &&
-          response[0] &&
-          usersActions.select({ clientId: response[0].id })
-        );
-      })
-    );
-  });
-
-  select$ = createEffect(() => {
-    return this.actions.pipe(
-      ofType(usersActions.select),
-      map(({ clientId }) => todosActions.search({ clientId }))
+        const userId = (response && response[0]?.id) ?? undefined;
+        return usersActions.select({ userId });
+      }),
+      catchError(() => of(usersActions.loadFail()))
     );
   });
 
@@ -127,24 +117,24 @@ export class UsersEffects implements OnInitEffects {
     );
   });
 
-  addNewClient$ = createEffect(() => {
+  addNewUser$ = createEffect(() => {
     return this.actions.pipe(
       ofType(usersActions.add),
       switchMap(({ payload }) => {
-        return this.clientApi.create$(payload).pipe(
-          map((client) => usersActions.addSuccess({ response: client })),
+        return this.usersApi.create$(payload).pipe(
+          map((user) => usersActions.addSuccess({ response: user })),
           catchError(() => of(usersActions.addFail()))
         );
       })
     );
   });
 
-  updateClient$ = createEffect(() => {
+  updateUser$ = createEffect(() => {
     return this.actions.pipe(
       ofType(usersActions.update),
       switchMap(({ payload }) => {
-        return this.clientApi.update$(payload).pipe(
-          map((client) => usersActions.updateSuccess({ response: client })),
+        return this.usersApi.update$(payload).pipe(
+          map((user) => usersActions.updateSuccess({ response: user })),
           catchError(() => of(usersActions.updateFail()))
         );
       })
@@ -155,7 +145,7 @@ export class UsersEffects implements OnInitEffects {
     return this.actions.pipe(
       ofType(usersActions.delete),
       switchMap(({ userId }) => {
-        return this.clientApi.delete$(userId).pipe(
+        return this.usersApi.delete$(userId).pipe(
           map(() =>
             usersActions.deleteSuccess({
               deletedUserId: userId,

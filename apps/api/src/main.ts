@@ -1,17 +1,16 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './modules/app/app.module';
 
 async function bootstrap() {
-
   const app = await NestFactory.create(AppModule, { cors: true });
   app.useGlobalPipes(new ValidationPipe());
 
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
 
-    // Set up Swagger/OpenAPI
+  // Set up Swagger/OpenAPI
   const config = new DocumentBuilder()
     .setTitle('zerops frontend example test api')
     .setVersion('0.0.1')

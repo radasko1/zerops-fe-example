@@ -1,5 +1,4 @@
-import { inject } from '@angular/core';
-import { createActionGroup, createFeature, createReducer, emptyProps, on, props, select, Store } from '@ngrx/store';
+import { createActionGroup, createFeature, createReducer, emptyProps, on, props } from '@ngrx/store';
 import {
   CreateDialogFormResponse,
   UpdateDialogFormResponse,
@@ -11,7 +10,7 @@ import {
 
 const USERS_FEATURE_NAME = 'users';
 
-const initialClientState: UserState = {
+const initialState: UserState = {
   data: [],
   activeUserId: undefined,
 };
@@ -35,7 +34,7 @@ export const usersActions = createActionGroup({
     deleteSuccess: props<{ deletedUserId: string }>(),
     deleteFail: emptyProps(),
 
-    select: props<{ clientId: string }>(),
+    select: props<{ userId: string }>(),
 
     showCreateModal: emptyProps(),
     showEditModal: props<{ userRef: UserFormData }>(),
@@ -50,14 +49,14 @@ export const usersActions = createActionGroup({
 export const usersState = createFeature({
   name: USERS_FEATURE_NAME,
   reducer: createReducer(
-    initialClientState,
+    initialState,
     //
     on(usersActions.loadSuccess, (state, { response }) => ({
       ...state,
       data: response,
     })),
     //
-    on(usersActions.select, (state, { clientId: userId }) => ({
+    on(usersActions.select, (state, { userId: userId }) => ({
       ...state,
       activeUserId: userId,
     })),
@@ -66,6 +65,7 @@ export const usersState = createFeature({
       ...state,
       data: [...state.data, response],
     })),
+    //
     on(usersActions.updateSuccess, (state, { response }) => ({
       ...state,
       data: state.data.map((user) =>
@@ -79,12 +79,3 @@ export const usersState = createFeature({
     }))
   ),
 });
-
-export function clientsEntity() {
-  const store = inject(Store);
-  return {
-    // select{propertyName}
-    clients$: store.pipe(select(usersState.selectData)),
-    activeUserId$: store.pipe(select(usersState.selectActiveUserId)),
-  };
-}

@@ -1,35 +1,41 @@
-<h1 class="__title">Todos</h1>
+<a mat-button routerLink="/users" class="__navigation-link">
+  <span class="material-symbols-outlined icon">group</span>
+  <span>Správa uživatelů</span>
+</a>
 
-<users-list
-  [users]="clients()"
-  [selectedUserId]="selectedUserId()"
-  (onSelect)="onSelectUser$.next($event)"
-  (onCreateUser)="onCreateNewUser$.next()"
-/>
+<div class="__wrap">
+  <h1 class="__title">Todos</h1>
 
-<mat-card class="__add-form-card">
-  <z-todo-add-form [formInstance]="formInstance" (add)="onAdd$.next($event)" />
-</mat-card>
-
-<div class="__actions-wrap">
-  <z-todos-actions
-    [hideCompletedState]="state().hideCompletedSignal"
-    (toggleCompleted)="hideCompletedSignal.set($event)"
-    (markAllComplete)="onMarkAllComplete$.next()"
+  <users-list
+    [users]="users()"
+    [selectedUserId]="selectedUserId()"
+    (onSelect)="onSelectUser$.next($event)"
+    (onCreateUser)="onCreateNewUser$.next()"
   />
+
+  <mat-card class="__add-form-card">
+    <z-todo-add-form
+      [formInstance]="formInstance"
+      [enableFormControls]="!!selectedUserId()"
+      (add)="onAdd$.next($event)"
+    />
+  </mat-card>
+
+  <div class="__actions-wrap">
+    <z-todos-actions
+      [hideCompletedState]="state().hideCompletedSignal"
+      (toggleCompleted)="hideCompletedSignal.set($event)"
+      (markAllComplete)="onMarkAllComplete$.next()"
+    />
+  </div>
+
+  <z-todos-list
+    (updateItem)="onUpdate$.next($event)"
+    (deleteItem)="onDelete$.next($event)"
+    [todos]="state().visibleTodos"
+  />
+
+  <div class="__count-wrap">
+    <z-todos-counter [todos]="state().todos" />
+  </div>
 </div>
-
-<z-todos-list
-  (updateItem)="onUpdate$.next($event)"
-  (deleteItem)="onDelete$.next($event)"
-  [todos]="state().visibleTodos"
-/>
-
-<div class="__count-wrap">
-  <z-todos-counter [todos]="state().todos" />
-</div>
-
-<!--TODO better place-->
-<button mat-raised-button color="secondary" routerLink="/users">
-  Správa uživatelů
-</button>

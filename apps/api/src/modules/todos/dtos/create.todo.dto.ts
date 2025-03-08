@@ -10,7 +10,14 @@ export class CreateTodoDto {
   @IsString()
   readonly text: string;
 
-  @ApiProperty({ description: 'The completion status of the todo item', default: false })
+  @ApiProperty({
+    description: 'The completion status of the todo item',
+    default: false,
+  })
   @IsBoolean()
   readonly completed: boolean;
+
+  @ApiProperty({ description: 'Owner of the Todo item' })
+  @IsString()
+  readonly userId: string;
 }

@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   HttpException,
   HttpStatus,
   InternalServerErrorException,
@@ -22,35 +21,35 @@ import {
   ApiResponse,
   ApiTags
 } from '@nestjs/swagger';
-import { ClientsService } from './clients.service';
-import { ClientDto } from './models/client.dto';
+import { UserDto } from './models/user-dto.model';
+import { UsersService } from './users.service';
 
-@ApiTags('clients')
-@Controller('clients')
-export class ClientsController {
-  constructor(private readonly clientsService: ClientsService) {}
+@ApiTags('users')
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all clients' })
+  @ApiOperation({ summary: 'Get all users' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   public async findAll() {
     try {
-      return this.clientsService.findAll();
+      return this.usersService.findAll();
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get a client by ID' })
+  @ApiOperation({ summary: 'Get a User by ID' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   public async findOne(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const client = await this.clientsService.findOne(id);
-      if (!client) {
-        throw new NotFoundException(`Client not found`);
+      const user = await this.usersService.findOne(id);
+      if (!user) {
+        throw new NotFoundException(`User not found`);
       }
-      return client;
+      return user;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
@@ -62,18 +61,23 @@ export class ClientsController {
     }
   }
 
+  @Get(':id/todos')
+  public async findUserWithTodos(@Param('id', ParseUUIDPipe) userId: string) {
+    return this.usersService.findOneWithTodos(userId);
+  }
+
   @Post()
-  @ApiOperation({ summary: 'Create a new client' })
+  @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Client created',
-    type: ClientDto,
+    description: 'User created',
+    type: UserDto,
   })
-  @ApiBadRequestResponse({ description: 'Invalid client data' })
+  @ApiBadRequestResponse({ description: 'Invalid user data' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  public async create(@Body() clientDto: ClientDto) {
+  public async create(@Body() userDto: UserDto) {
     try {
-      return await this.clientsService.create(clientDto);
+      return await this.usersService.create(userDto);
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -84,26 +88,26 @@ export class ClientsController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update a client by ID' })
+  @ApiOperation({ summary: 'Update a user by ID' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Client updated',
-    type: ClientDto,
+    description: 'User updated',
+    type: UserDto,
   })
-  @ApiParam({ name: 'id', type: 'string', description: 'Client ID (UUID)' })
-  @ApiNotFoundResponse({ description: 'Client not found' })
-  @ApiBadRequestResponse({ description: 'Invalid client data or UUID format' })
+  @ApiParam({ name: 'id', type: 'string', description: 'User ID (UUID)' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  @ApiBadRequestResponse({ description: 'Invalid user data or UUID format' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   public async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() clientDto: ClientDto
+    @Body() userDto: UserDto
   ) {
     try {
-      const updatedClient = await this.clientsService.update(id, clientDto);
-      if (!updatedClient) {
-        throw new NotFoundException(`Client not found`);
+      const updatedUser = await this.usersService.update(id, userDto);
+      if (!updatedUser) {
+        throw new NotFoundException(`User not found`);
       }
-      return updatedClient;
+      return updatedUser;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
@@ -116,19 +120,16 @@ export class ClientsController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete a client by ID' })
-  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'Client deleted' })
-  @ApiNotFoundResponse({ description: 'Client not found' })
+  @ApiOperation({ summary: 'Delete a user by ID' })
+  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'User deleted' })
+  @ApiNotFoundResponse({ description: 'User not found' })
   @ApiBadRequestResponse({ description: 'Invalid UUID format' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  @HttpCode(HttpStatus.NO_CONTENT)
   public async delete(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      return this.clientsService.delete(id);
+      await this.usersService.delete(id);
     } catch (error) {
       if (error instanceof NotFoundException) {
-        throw error;
-      } else if (error instanceof HttpException) {
         throw error;
       } else {
         throw new InternalServerErrorException(error.message);

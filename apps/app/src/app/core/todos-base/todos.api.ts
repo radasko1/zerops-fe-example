@@ -8,16 +8,15 @@ export class TodosApi {
   #apiUrl = `${process.env.Z_API_URL}/todos`;
   #clientId = process.env.Z_CLIENT_ID;
 
-  // You can define 'clientId' of new task
-  add$(data: TodoAddPayload, clientId = this.#clientId) {
+  add$(data: TodoAddPayload) {
     return this.#httpClient.post<TodoAddResponse>(this.#apiUrl, {
       ...data,
-      clientId: clientId,
+      clientId: this.#clientId,
     });
   }
 
   update$(id: number, data: TodoUpdatePayload) {
-    return this.#httpClient.put<TodoUpdateResponse>(
+    return this.#httpClient.patch<TodoUpdateResponse>(
       `${this.#apiUrl}/${id}`,
       data
     );

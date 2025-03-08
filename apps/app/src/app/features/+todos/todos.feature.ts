@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { MatButton } from '@angular/material/button';
+import { MatAnchor } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -11,10 +11,11 @@ import { TodosActionsComponent } from '../../components/todos-actions/todos-acti
 import { TodosCounterComponent } from '../../components/todos-counter/todos-counter.component';
 import { TodosListComponent } from '../../components/todos-list/todos-list.component';
 import { UsersListComponent } from '../../components/users-list/users-list.component';
-import { TodoAddPayload, TodoUpdatePayload } from '../../core/todos-base/todos.model';
-import { todosActions, todosEntity } from '../../core/todos-base/todos.state';
+import { selectTodosForActiveUser } from '../../core/store-selectors';
+import { TodoAddPayload, TodoCreatePayload, TodoUpdatePayload } from '../../core/todos-base/todos.model';
+import { todosActions } from '../../core/todos-base/todos.state';
 import { filterCompletedTodos } from '../../core/todos-base/todos.utils';
-import { clientsEntity, usersActions, usersState } from '../../core/users-base/users.state';
+import { usersActions, usersState } from '../../core/users-base/users.state';
 
 @Component({
   selector: 'z-todos',
@@ -30,13 +31,10 @@ import { clientsEntity, usersActions, usersState } from '../../core/users-base/u
     TodosCounterComponent,
     UsersListComponent,
     RouterLink,
-    MatButton,
+    MatAnchor,
   ],
 })
 export class TodosFeature {
-  // deps
-  #todosEntity = todosEntity();
-  #clientsEntity = clientsEntity();
   #store = inject(Store);
   formInstance = inject(TodoAddFormInstance);
 
@@ -50,18 +48,16 @@ export class TodosFeature {
 
   // data
   hideCompletedSignal = signal(false);
-  todosSignal = toSignal(this.#todosEntity.todos$);
+  todosSignal = toSignal(this.#store.select(selectTodosForActiveUser));
   visibleTodos = computed(() =>
     this.hideCompletedSignal()
       ? filterCompletedTodos(this.todosSignal())
       : this.todosSignal()
   );
-  clients = toSignal(this.#store.select(usersState.selectData), {
+  users = toSignal(this.#store.select(usersState.selectData), {
     initialValue: [],
   });
-  selectedUserId = toSignal(
-    this.#store.select(usersState.selectActiveUserId)
-  );
+  selectedUserId = toSignal(this.#store.select(usersState.selectActiveUserId));
 
   // resolver
   state = computed(() => ({
@@ -72,10 +68,18 @@ export class TodosFeature {
 
   // action streams
   #addAction$ = this.onAdd$.pipe(
-    map((payload) => todosActions.add({ payload }))
+    map((payload) => {
+      const todo = {
+        ...payload,
+        userId: this.selectedUserId(),
+      } as TodoCreatePayload;
+      return todosActions.add({ payload: todo });
+    })
   );
   #updateAction$ = this.onUpdate$.pipe(
-    map(({ id, payload }) => todosActions.update({ id, payload }))
+    map(({ id, payload }) => {
+      return todosActions.update({ id, payload });
+    })
   );
   #deleteAction$ = this.onDelete$.pipe(
     map((id) => todosActions.delete({ id }))
@@ -84,7 +88,7 @@ export class TodosFeature {
     map(() => todosActions.markAllComplete())
   );
   #onSelectUserAction$ = this.onSelectUser$.pipe(
-    map((userId) => usersActions.select({ clientId: userId }))
+    map((userId) => usersActions.select({ userId: userId }))
   );
   #onCreateNewUserAction$ = this.onCreateNewUser$.pipe(
     map(() => usersActions.showCreateModal())

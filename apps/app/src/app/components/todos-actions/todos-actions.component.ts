@@ -8,11 +8,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   templateUrl: './todos-actions.component.html',
   styleUrl: './todos-actions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatSlideToggleModule,
-    MatButtonModule,
-    MatIconModule
-  ]
+  imports: [MatSlideToggleModule, MatButtonModule, MatIconModule],
 })
 export class TodosActionsComponent {
   hideCompletedState = input(false);

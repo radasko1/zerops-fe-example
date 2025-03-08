@@ -6,7 +6,7 @@
     (click)="onSelect.emit(user.id)"
     [matTooltip]="user.name"
   >
-    {{ user.name | slice : 0 : 1 }}
+    {{ user.name | username }}
   </li>
   }
   <!-- NEW USER -->

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
 import { Store } from '@ngrx/store';
 import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
@@ -10,7 +10,7 @@ import { TodosApi } from './todos.api';
 import { todosActions } from './todos.state';
 
 @Injectable()
-export class TodosEffects {
+export class TodosEffects implements OnInitEffects {
   // deps
   #actions$ = inject(Actions);
   #store = inject(Store);
@@ -34,8 +34,8 @@ export class TodosEffects {
   search$ = createEffect(() =>
     this.#actions$.pipe(
       ofType(todosActions.search),
-      switchMap(({ clientId }) =>
-        this.#api.search$(clientId).pipe(
+      switchMap(({ userId }) =>
+        this.#api.search$(userId).pipe(
           map((res) => todosActions.searchSuccess({ res })),
           catchError(() => of(todosActions.searchFail()))
         )
@@ -46,15 +46,13 @@ export class TodosEffects {
   add$ = createEffect(() => {
     return this.#actions$.pipe(
       ofType(todosActions.add),
-      concatLatestFrom(() =>
-        this.#store.select(usersState.selectActiveUserId)
-      ),
-      switchMap(([todoPayload, activeUserId]) =>
-        this.#api.add$(todoPayload.payload, activeUserId).pipe(
+      concatLatestFrom(() => this.#store.select(usersState.selectActiveUserId)),
+      switchMap(([todoPayload]) => {
+        return this.#api.add$(todoPayload.payload).pipe(
           map((res) => todosActions.addSuccess({ res })),
           catchError(() => of(todosActions.addFail()))
-        )
-      )
+        );
+      })
     );
   });
 
@@ -143,7 +141,7 @@ export class TodosEffects {
     this.#snack.open(message, 'Zavřít', { horizontalPosition: 'start' });
   }
 
-  // ngrxOnInitEffects() {
-  //   return todosActions.init();
-  // }
+  ngrxOnInitEffects() {
+    return todosActions.init();
+  }
 }

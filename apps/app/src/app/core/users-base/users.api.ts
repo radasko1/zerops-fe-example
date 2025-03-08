@@ -7,21 +7,24 @@ import { User, UserFormData, UserPayload } from './user.model';
 })
 export class UsersApi {
   private readonly httpClient = inject(HttpClient);
-  private readonly apiUrl = `${process.env.Z_API_URL}/clients`;
+  private readonly apiUrl = `${process.env.Z_API_URL}/users`;
 
   public getAll$() {
     return this.httpClient.get<User[]>(`${this.apiUrl}`);
   }
 
-  public create$(ClientPayload: UserPayload) {
-    return this.httpClient.post<User>(`${this.apiUrl}`, ClientPayload);
+  public create$(userPayload: UserPayload) {
+    return this.httpClient.post<User>(`${this.apiUrl}`, userPayload);
   }
 
   public update$(userPayload: UserFormData) {
-    return this.httpClient.put<User>(`${this.apiUrl}/${userPayload.id}`, userPayload);
+    return this.httpClient.put<User>(
+      `${this.apiUrl}/${userPayload.id}`,
+      userPayload
+    );
   }
 
-  public delete$(clientId: string) {
-    return this.httpClient.delete<void>(`${this.apiUrl}/${clientId}`);
+  public delete$(userId: string) {
+    return this.httpClient.delete<void>(`${this.apiUrl}/${userId}`);
   }
 }

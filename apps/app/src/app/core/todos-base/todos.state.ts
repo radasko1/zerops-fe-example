@@ -2,8 +2,8 @@ import { inject } from '@angular/core';
 import { createActionGroup, createFeature, createReducer, emptyProps, on, props, select, Store } from '@ngrx/store';
 import {
   FEATURE_NAME,
-  TodoAddPayload,
   TodoAddResponse,
+  TodoCreatePayload,
   TodoEntity,
   TodosState,
   TodoUpdatePayload,
@@ -19,7 +19,7 @@ export const todosActions = createActionGroup({
   events: {
     init: emptyProps(),
 
-    add: props<{ payload: TodoAddPayload }>(),
+    add: props<{ payload: TodoCreatePayload }>(),
     'add success': props<{ res: TodoAddResponse }>(),
     'add fail': emptyProps(),
 
@@ -31,7 +31,7 @@ export const todosActions = createActionGroup({
     'delete success': props<{ id: number }>(),
     'delete fail': emptyProps(),
 
-    search: props<{ clientId: string }>(),
+    search: props<{ userId: string }>(),
     'search success': props<{ res: TodoEntity[] }>(),
     'search fail': emptyProps(),
 
@@ -45,7 +45,6 @@ export const todosState = createFeature({
   name: FEATURE_NAME,
   reducer: createReducer(
     initialState,
-    // todo memoize
     on(todosActions.searchSuccess, (state, { res }) => ({
       ...state,
       data: res,

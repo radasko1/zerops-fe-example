@@ -23,13 +23,25 @@ export class TodosService {
   async findOne(id: number): Promise<Todo> {
     const data = await this.todosRepository.findOne({ where: { id } });
     if (!data) {
-      throw new NotFoundException('todo not found');
+      throw new NotFoundException('Todo not found');
     }
     return data;
   }
 
   async update(id: number, data: UpdateTodoDto): Promise<Todo> {
-    const updatedData = await this.todosRepository.save({ id, ...data });
+    const todo = await this.todosRepository.findOneBy({ id });
+    if (!todo) {
+      throw new NotFoundException('Todo not found');
+    }
+
+    if (data.hasOwnProperty('text')) {
+      todo.text = data.text;
+    }
+    if (data.hasOwnProperty('completed')) {
+      todo.completed = data.completed;
+    }
+
+    const updatedData = await this.todosRepository.save(todo);
     return updatedData;
   }
 
@@ -39,7 +51,7 @@ export class TodosService {
   }
 
   async removeUserTodos(userId: string) {
-    const deleted = await this.todosRepository.delete({ clientId: userId });
+    const deleted = await this.todosRepository.delete({ userId: userId });
     return deleted.affected;
   }
 
