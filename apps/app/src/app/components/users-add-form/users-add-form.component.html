@@ -1,4 +1,6 @@
-<h2 mat-dialog-title>Vytvořit uživatele</h2>
+<h2 mat-dialog-title>
+  {{ isEditing ? 'Editovat uživatele' : 'Vytvořit uživatele' }}
+</h2>
 <mat-dialog-content>
   <form class="__form" [formGroup]="userFormGroup">
     <mat-form-field>
@@ -17,10 +19,10 @@
     mat-button
     color="primary"
     type="button"
-    [disabled]="!isFormValid"
+    [disabled]="!isFormValid()"
     (click)="onModalClose()"
     cdkFocusInitial
   >
-    Odeslat
+    {{ isEditing ? 'Upravit' : 'Vytvořit' }}
   </button>
 </mat-dialog-actions>

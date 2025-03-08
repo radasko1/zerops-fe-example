@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -10,6 +11,7 @@ import {
   MatDialogTitle
 } from '@angular/material/dialog';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
+import { map, startWith } from 'rxjs/operators';
 import {
   CreateDialogFormResponse,
   createUserAction,
@@ -40,7 +42,7 @@ import {
 })
 export class UsersAddFormComponent {
   private readonly dialogRef = inject(MatDialogRef<UsersAddFormComponent>);
-  protected readonly matDialogData = inject<{
+  protected readonly dialogData = inject<{
     action: userFormAction;
     userData?: UserFormData;
   }>(MAT_DIALOG_DATA);
@@ -60,38 +62,41 @@ export class UsersAddFormComponent {
     }),
   });
 
-  constructor() {
-    if (!this.matDialogData.userData) {
-      return;
-    }
-    this.userFormGroup.patchValue(this.matDialogData.userData);
-  }
+  protected readonly isEditing = this.dialogData.action === updateUserAction;
+  protected readonly isFormValid = toSignal(
+    this.userFormGroup.statusChanges.pipe(
+      startWith(this.userFormGroup.valid),
+      map(() => this.userFormGroup.valid)
+    ),
+    { initialValue: false }
+  );
 
-  // TODO transform to declarative/async
-  protected get isFormValid(): boolean {
-    return this.userFormGroup.valid;
+  constructor() {
+    if (this.dialogData.userData) {
+      this.userFormGroup.patchValue(this.dialogData.userData);
+    }
   }
 
   protected onModalClose() {
+    if (this.userFormGroup.invalid) {
+      return;
+    }
+
     const clientPayload = this.userFormGroup.getRawValue();
     this.userFormGroup.reset();
     this.userFormGroup.markAsUntouched();
 
-    const action = this.matDialogData.action;
-    // create action
-    if (action === createUserAction) {
-      return this.dialogRef.close({
-        action: this.matDialogData.action,
-        payload: clientPayload,
-      } as CreateDialogFormResponse);
-    }
-    // update action
-    else if (action === updateUserAction) {
-      return this.dialogRef.close({
-        action: this.matDialogData.action,
-        payload: { ...clientPayload, id: this.matDialogData.userData?.id },
-      } as UpdateDialogFormResponse);
-    }
-    return undefined;
+    const response =
+      this.dialogData.action === createUserAction
+        ? ({
+            action: this.dialogData.action,
+            payload: clientPayload,
+          } as CreateDialogFormResponse)
+        : ({
+            action: this.dialogData.action,
+            payload: { ...clientPayload, id: this.dialogData.userData?.id },
+          } as UpdateDialogFormResponse);
+
+    this.dialogRef.close(response);
   }
 }

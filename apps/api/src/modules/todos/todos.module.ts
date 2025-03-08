@@ -5,8 +5,9 @@ import { Todo } from './todos.entity';
 import { TodosService } from './todos.service';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([Todo]) ],
-  controllers: [TodosController ],
-  providers: [ TodosService ]
+  imports: [TypeOrmModule.forFeature([Todo])],
+  controllers: [TodosController],
+  providers: [TodosService],
+  exports: [TodosService],
 })
-export class TodosModule { }
+export class TodosModule {}

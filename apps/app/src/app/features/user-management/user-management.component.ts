@@ -1,6 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import {
+  MatCell,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatRow,
+  MatTable,
+  MatTableModule
+} from '@angular/material/table';
 import { Store } from '@ngrx/store';
 import { map, merge, Subject } from 'rxjs';
 import { Client } from '../../core/clients-base/client.model';
@@ -9,9 +21,25 @@ import { clientsActions, clientsState } from '../../core/clients-base/clients.st
 @Component({
   selector: 'user-management',
   templateUrl: './user-management.component.html',
+  styleUrls: ['./user-management.component.scss'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButton],
+  imports: [
+    MatTableModule,
+    MatButton,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatCell,
+    MatHeaderRow,
+    MatRow,
+    MatIconButton,
+    MatIcon,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+  ],
 })
 export class UserManagementComponent {
   private readonly store = inject(Store);
@@ -25,10 +53,10 @@ export class UserManagementComponent {
   protected editUser$ = new Subject<Client>();
   protected deleteUser$ = new Subject<string>();
 
+  protected readonly tableColumns = ['name', 'email', 'actions'];
+
   private createNewUserAction$ = this.createUser$.pipe(
-    map(() =>
-      clientsActions.showCreateModal()
-    )
+    map(() => clientsActions.showCreateModal())
   );
   private editUserAction$ = this.editUser$.pipe(
     map((userRef) =>
@@ -41,9 +69,8 @@ export class UserManagementComponent {
       })
     )
   );
-  // TODO confirmation dialog
   private deleteUserAction$ = this.deleteUser$.pipe(
-    map((userId) => clientsActions.delete({ userId }))
+    map((userId) => clientsActions.showDeleteModal({ userId }))
   );
 
   constructor() {

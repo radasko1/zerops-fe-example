@@ -9,15 +9,15 @@ import { Todo } from './todos.entity';
 export class TodosService {
   constructor(
     @InjectRepository(Todo)
-    private todosRepository: Repository<Todo>,
-  ) { }
+    private todosRepository: Repository<Todo>
+  ) {}
 
   async create(createTodoDto: CreateTodoDto): Promise<Todo> {
     return this.todosRepository.save(createTodoDto);
   }
 
   async findAll(clientId: string): Promise<Todo[]> {
-    return this.todosRepository.find({ where: { clientId }});
+    return this.todosRepository.find({ where: { clientId } });
   }
 
   async findOne(id: number): Promise<Todo> {
@@ -38,8 +38,15 @@ export class TodosService {
     return deletedData.affected;
   }
 
-  async markAllAsCompleted(clientId: string): Promise<void> {
-    await this.todosRepository.update({ completed: false, clientId }, { completed: true });
+  async removeUserTodos(userId: string) {
+    const deleted = await this.todosRepository.delete({ clientId: userId });
+    return deleted.affected;
   }
 
+  async markAllAsCompleted(clientId: string): Promise<void> {
+    await this.todosRepository.update(
+      { completed: false, clientId },
+      { completed: true }
+    );
+  }
 }

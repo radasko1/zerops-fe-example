@@ -39,6 +39,7 @@ export const clientsActions = createActionGroup({
 
     showCreateModal: emptyProps(),
     showEditModal: props<{ userRef: UserFormData }>(),
+    showDeleteModal: props<{ userId: string }>(),
     closeModal: props<{
       result: UpdateDialogFormResponse | CreateDialogFormResponse | undefined;
     }>(),

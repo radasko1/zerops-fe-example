@@ -3,6 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { UsersAddFormComponent } from '../../components/users-add-form/users-add-form.component';
+import { UsersDeleteModalComponent } from '../../components/users-delete-modal/users-delete-modal.component';
 import { todosActions } from '../todos-base/todos.state';
 import { createUserAction, updateUserAction } from './client.model';
 import { clientsActions } from './clients.state';
@@ -84,6 +85,28 @@ export class ClientsEffects implements OnInitEffects {
             })
           )
       )
+    );
+  });
+
+  showDeleteModal$ = createEffect(() => {
+    return this.actions.pipe(
+      ofType(clientsActions.showDeleteModal),
+      switchMap(({ userId }) => {
+        return this.modal
+          .open(UsersDeleteModalComponent, {
+            data: {
+              userId,
+            },
+          })
+          .afterClosed()
+          .pipe(
+            map((userId) => {
+              return userId
+                ? clientsActions.delete(userId)
+                : clientsActions.closeModalSuccess();
+            })
+          );
+      })
     );
   });
 

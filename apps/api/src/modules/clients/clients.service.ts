@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { TodosService } from '../todos/todos.service';
 import { Client } from './clients.entity';
 import { ClientDto } from './models/client.dto';
 
@@ -8,7 +9,9 @@ import { ClientDto } from './models/client.dto';
 export class ClientsService {
   constructor(
     @InjectRepository(Client)
-    private readonly clientsRepository: Repository<Client>
+    private readonly clientsRepository: Repository<Client>,
+    @InjectDataSource() private readonly dataSource: DataSource,
+    private readonly todosService: TodosService
   ) {}
 
   public async findAll() {
@@ -55,8 +58,27 @@ export class ClientsService {
    * @param clientId
    */
   public async delete(clientId: string) {
-    const deleted = await this.clientsRepository.delete(clientId);
-    // TODO delete todos
-    return deleted.affected;
+    // Start transaction
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const userRef = await this.clientsRepository.findOne({
+        where: { id: clientId },
+      });
+      if (!userRef) {
+        throw new NotFoundException('User not found');
+      }
+
+      const deletedUser = await this.clientsRepository.delete(clientId);
+      const deletedTodos = await this.todosService.removeUserTodos(clientId);
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

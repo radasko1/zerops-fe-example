@@ -1,9 +1,38 @@
 <h1 class="__title">User Management</h1>
 
-<button mat-flat-button color="primary" (click)="createUser$.next()">
-  Vytvořit uživatele
-</button>
+<div class="__button-container">
+  <button mat-flat-button color="primary" (click)="createUser$.next()">
+    Vytvořit uživatele
+  </button>
+</div>
 
-@for (user of usersList(); track user.id) {
-  <p>{{ user.name }}, {{ user.email }}</p>
-}
+<table mat-table [dataSource]="usersList()">
+  <!-- NAME column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Jméno</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+  <!-- EMAIL column -->
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef>E-mail</th>
+    <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+  </ng-container>
+  <!-- ACTIONS -->
+  <ng-container matColumnDef="actions" name="action-column">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let row">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="editUser$.next(row)">Upravit</button>
+        <button mat-menu-item (click)="deleteUser$.next(row.id)">
+          Odstranit
+        </button>
+      </mat-menu>
+    </td>
+  </ng-container>
+  <!--  -->
+  <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
+</table>
