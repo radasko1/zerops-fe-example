@@ -1,20 +1,25 @@
-<ul class="__client-list">
-  @for (user of users(); track user.id) {
-  <li
-    class="__client-avatar"
-    [class.active]="user.id === selectedUserId()"
-    (click)="onSelect.emit(user.id)"
-    [matTooltip]="user.name"
-  >
-    {{ user.name | username }}
-  </li>
-  }
-  <!-- NEW USER -->
-  <li
-    class="__new-client __client-avatar"
+<div class="__client-wrapper">
+  <ul class="__client-list">
+    @for (user of users(); track user.id) {
+    <li
+      class="__client-avatar"
+      [class.active]="user.id === selectedUserId()"
+      (click)="onSelect.emit(user.id)"
+      [matTooltip]="user.name"
+    >
+      {{ user.name | username }}
+    </li>
+    }
+  </ul>
+</div>
+<!-- NEW USER -->
+<div class="__new-client-wrapper">
+  <button
+    type="button"
+    class="__new-client"
     (click)="onCreateUser.emit()"
     matTooltip="Vytvořit uživatele"
   >
     &plus;
-  </li>
-</ul>
+  </button>
+</div>
