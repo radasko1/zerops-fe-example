@@ -1,13 +1,13 @@
 <div class="__client-wrapper">
   <ul class="__client-list">
-    @for (user of users(); track user.id) {
+    @for (user of usersList(); track user.id) {
     <li
       class="__client-avatar"
       [class.active]="user.id === selectedUserId()"
       (click)="onSelect.emit(user.id)"
       [matTooltip]="user.name"
     >
-      {{ user.name | username }}
+      {{ user.username }}
     </li>
     }
   </ul>
